@@ -67,8 +67,8 @@ class getCNN(Inception3):
         return x_for_capt
     def forward_img(self,img):
         img = torch.tensor(cv2.resize(img, (299, 299), interpolation=cv2.INTER_AREA))
-        img = img.float()
-        x = img.permute(2,0,1).unsqueeze(0)/255.0
+        x = torch.tensor(img, dtype=torch.float32)
+        x = x.permute(2,0,1).unsqueeze(0)/255.0
         x[:, 0] = x[:, 0] * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
         x[:, 1] = x[:, 1] * (0.224 / 0.5) + (0.456 - 0.5) / 0.5
         x[:, 2] = x[:, 2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
