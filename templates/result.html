@@ -1,7 +1,20 @@
-<!doctype html>
-<title>Hello from Flask</title>
-{% if predict %}
-  <h1>{{ predict }}</h1>
-{% else %}
-  <h1>Нет результата</h1>
-{% endif %}l>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href='{{ url_for("static", filename="style.css") }}'>
+    <title>Document</title>
+</head>
+<body>
+    <div class=modal>
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <div class="up-left">
+                <img class="main" src="https://i.pinimg.com/736x/63/3e/de/633ede94e0f3826cb1da23b6133b704d.jpg">
+            </div>
+            <div class="up-right">
+                <h3> Я думаю что на картинке: {{text}}</h3>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

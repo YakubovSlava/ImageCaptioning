@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for
 from flask import request
 from flask import render_template
 import numpy as np
@@ -40,7 +40,7 @@ def getCaption_img(img):
         q = list(F.softmax(res, dim=-1).data)
         sentence[0].append(vocabulary[q.index(max(q))])
         if (vocabulary[q.index(max(q))] == '#END#'): break
-    return ('<h2>'+' '.join(sentence[0][1:-1])+'</h2>')
+    return (' '.join(sentence[0][1:-1]))
 
 @app.route('/')
 def hello_world():
@@ -56,6 +56,6 @@ def upload_file():
 
         npimg = np.fromstring(f, np.uint8)
         img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-        return (getCaption_img(img))
+        return render_template('result.html', text=(getCaption_img(img)))
     if request.method == 'GET':
         return render_template('form.html')
