@@ -15,9 +15,10 @@ body {
 
 }
 
-img.main{
+img{
 	border: 1px double black;
 }
+
 
 div.up-right{
 	text-align: center;

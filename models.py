@@ -100,7 +100,7 @@ class getCNN(Inception3):
 
 
 class RNN(nn.Module):
-    def __init__(self, n_tokens=n_tokens, emb_size=128, lstm_units=256, cnn_feature_size=2048):
+    def __init__(self, n_tokens=n_tokens, emb_size=512, lstm_units=980, cnn_feature_size=2048):
         super(self.__class__, self).__init__()
         self.cnn_to_h0 = nn.Linear(cnn_feature_size, lstm_units)
         self.cnn_to_c0 = nn.Linear(cnn_feature_size, lstm_units)

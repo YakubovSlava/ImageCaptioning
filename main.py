@@ -9,7 +9,7 @@ import models
 import torch
 import torch.nn.functional as F
 from torch.utils.model_zoo import load_url
-
+from base64 import b64encode
 inception_url = 'https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth'
 
 cnn = getCNN()
@@ -53,9 +53,12 @@ from flask import request
 def upload_file():
     if request.method == 'POST':
         f = request.files['uploaded_file'].read()
-
+        data = f
+        encoded = b64encode(data)
+        mime = "image/jpeg"
+        uri = "data:%s;base64,%s" % (mime, str(encoded)[2:-1])
         npimg = np.fromstring(f, np.uint8)
         img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-        return render_template('result.html', text=(getCaption_img(img)))
+        return render_template('result.html', text=(getCaption_img(img)), url=uri)
     if request.method == 'GET':
         return render_template('form.html')
