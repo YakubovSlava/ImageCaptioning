@@ -14,6 +14,10 @@
             <div class="up-right">
                 <img src="{{ url }}" class="returned" width="250">
                 <h3> Я думаю что на картинке: {{text}}</h3>
+                {% for i in range(len) %}
+                    <img  src="{{ mas[i] }}" width="100" height="100">
+                    <h2>{{emotions[i]}}</h2>
+                {% endfor %}
             </div>
         </form>
     </div>

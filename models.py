@@ -14,6 +14,8 @@ import numpy as np
 
 # In[9]:
 
+fun = nn.Softmax(dim=1)
+
 
 word_index = np.load('word2index.npy',allow_pickle=True).item()
 vacabulary = np.load('vocabulary.npy')
@@ -66,9 +68,9 @@ class getCNN(Inception3):
         x_for_capt = x = x.view(x.size(0), -1)
         return x_for_capt
     def forward_img(self,img):
-        img = torch.tensor(cv2.resize(img, (299, 299), interpolation=cv2.INTER_AREA))
-        x = torch.tensor(img, dtype=torch.float32)
-        x = x.permute(2,0,1).unsqueeze(0)/255.0
+        img = torch.tensor(cv2.resize(img, (299, 299), interpolation=cv2.INTER_AREA)).float()
+        # x = torch.tensor(img, dtype=torch.float32)
+        x = img.permute(2,0,1).unsqueeze(0)/255.0
         x[:, 0] = x[:, 0] * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
         x[:, 1] = x[:, 1] * (0.224 / 0.5) + (0.456 - 0.5) / 0.5
         x[:, 2] = x[:, 2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
@@ -96,7 +98,6 @@ class getCNN(Inception3):
         return x_for_capt
 
 
-# In[6]:
 
 
 class RNN(nn.Module):
@@ -117,8 +118,49 @@ class RNN(nn.Module):
         return logits
 
 
-# In[ ]:
+class CNN_emotions(torch.nn.Module):
+    def __init__(self):
+        super(CNN_emotions, self).__init__()
+        self.cnn1 = nn.Conv2d(in_channels=1, out_channels=8, kernel_size=3)
+        self.cnn2 = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3)
+        self.cnn3 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
+        self.cnn4 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
+        self.cnn5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3)
+        self.cnn6 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3)
+        self.cnn7 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3)
+        self.relu = nn.ReLU()
+        self.pool1 = nn.MaxPool2d(2, 1)
+        self.pool2 = nn.MaxPool2d(2, 2)
+        self.cnn1_bn = nn.BatchNorm2d(8)
+        self.cnn2_bn = nn.BatchNorm2d(16)
+        self.cnn3_bn = nn.BatchNorm2d(32)
+        self.cnn4_bn = nn.BatchNorm2d(64)
+        self.cnn5_bn = nn.BatchNorm2d(128)
+        self.cnn6_bn = nn.BatchNorm2d(256)
+        self.cnn7_bn = nn.BatchNorm2d(256)
+        self.fc1 = nn.Linear(1024, 512)
+        self.fc2 = nn.Linear(512, 256)
+        self.fc3 = nn.Linear(256, 7)
+        self.dropout = nn.Dropout(0.3)
+        self.log_softmax = nn.LogSoftmax(dim=1)
 
+    def forward(self, x):
+        x = x.float().unsqueeze(1)
+        x = self.relu(self.pool1(self.cnn1_bn(self.cnn1(x))))
+        x = self.relu(self.pool1(self.cnn2_bn(self.dropout(self.cnn2(x)))))
+        x = self.relu(self.pool1(self.cnn3_bn(self.cnn3(x))))
+        x = self.relu(self.pool1(self.cnn4_bn(self.dropout(self.cnn4(x)))))
+        x = self.relu(self.pool2(self.cnn5_bn(self.cnn5(x))))
+        x = self.relu(self.pool2(self.cnn6_bn(self.dropout(self.cnn6(x)))))
+        x = self.relu(self.pool2(self.cnn7_bn(self.dropout(self.cnn7(x)))))
+
+        x = x.view(x.size(0), -1)
+
+        x = self.relu(self.dropout(self.fc1(x)))
+        x = self.relu(self.dropout(self.fc2(x)))
+        x = self.fc3(x)
+
+        return fun(x)
 
 
 
