@@ -97,7 +97,6 @@ def upload_file():
             retval, buffer = cv2.imencode('.jpg', i)
             faceurl = "data:%s;base64,%s" % (mime, str(b64encode(buffer))[2:-1])
             mas.append(faceurl)
-        print(mas[0])
         return render_template('result.html', text=(getCaption_img(img)), url=uri, mas=mas, emotions=emotions, len=len(mas))
     if request.method == 'GET':
         return render_template('form.html')
