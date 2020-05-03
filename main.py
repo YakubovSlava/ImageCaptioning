@@ -21,7 +21,7 @@ cnn = cnn.train(False)
 
 
 rnn = RNN()
-rnn.load_state_dict(torch.load('net_param.pt', torch.device('cpu')))
+rnn.load_state_dict(torch.load('net_param2.pth', torch.device('cpu')))
 rnn = rnn.train(False)
 
 
