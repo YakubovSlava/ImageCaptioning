@@ -11,7 +11,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.model_zoo import load_url
 from base64 import b64encode
-
+import age_class
 
 inception_url = 'https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth'
 
@@ -64,6 +64,7 @@ def getEmotion_img(img):
         x, y, h, w = faces[i]
         face = img[y:y + h, x:x + w]
         face = cv2.resize(face, (48, 48), interpolation=cv2.INTER_AREA)
+
         images.append(face)
         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
         cropped.append(face)
@@ -92,11 +93,13 @@ def upload_file():
         img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
         emotions, images = getEmotion_img(img)
+        ages  = age_class.getAge(img)
+        print(ages)
         mas = []
         for i in images:
             retval, buffer = cv2.imencode('.jpg', i)
             faceurl = "data:%s;base64,%s" % (mime, str(b64encode(buffer))[2:-1])
             mas.append(faceurl)
-        return render_template('result.html', text=(getCaption_img(img)), url=uri, mas=mas, emotions=emotions, len=len(mas))
+        return render_template('result.html', text=(getCaption_img(img)), url=uri, mas=mas, emotions=emotions, len=len(mas), ages=ages)
     if request.method == 'GET':
         return render_template('form.html')
