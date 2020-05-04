@@ -94,7 +94,6 @@ def upload_file():
 
         emotions, images = getEmotion_img(img)
         ages  = age_class.getAge(img)
-        print(ages)
         mas = []
         for i in images:
             retval, buffer = cv2.imencode('.jpg', i)
