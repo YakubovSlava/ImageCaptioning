@@ -21,14 +21,14 @@ cnn = cnn.train(False)
 
 
 rnn = RNN()
-rnn.load_state_dict(torch.load('net_param2.pth', torch.device('cpu')))
+rnn.load_state_dict(torch.load('net_param.pt', torch.device('cpu')))
 rnn = rnn.train(False)
 
 
 
 emotions = CNN_emotions()
 emotions.load_state_dict(torch.load('emotions.pth', torch.device('cpu')))
-rnn = rnn.train(False)
+emotions = emotions.train(False)
 
 vocabulary = models.vacabulary
 
