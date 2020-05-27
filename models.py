@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[8]:
-
 
 import torch
 import torch.nn as nn
@@ -11,8 +6,6 @@ import cv2
 from torchvision.models.inception import Inception3
 import numpy as np
 
-
-# In[9]:
 
 fun = nn.Softmax(dim=1)
 
@@ -33,8 +26,6 @@ def batch_of_captions_into_matrix(sequences, max_len=None):
         matrix[i][:len(numbered)] = numbered
     return(matrix)
 
-
-# In[4]:
 
 
 class getCNN(Inception3):
@@ -142,17 +133,23 @@ class CNN_emotions(torch.nn.Module):
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, 7)
         self.dropout = nn.Dropout(0.3)
-        self.log_softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x):
         x = x.float().unsqueeze(1)
-        x = self.relu(self.pool1(self.cnn1_bn(self.cnn1(x))))
-        x = self.relu(self.pool1(self.cnn2_bn(self.dropout(self.cnn2(x)))))
-        x = self.relu(self.pool1(self.cnn3_bn(self.cnn3(x))))
-        x = self.relu(self.pool1(self.cnn4_bn(self.dropout(self.cnn4(x)))))
-        x = self.relu(self.pool2(self.cnn5_bn(self.cnn5(x))))
-        x = self.relu(self.pool2(self.cnn6_bn(self.dropout(self.cnn6(x)))))
-        x = self.relu(self.pool2(self.cnn7_bn(self.dropout(self.cnn7(x)))))
+        x = self.pool1(self.cnn1_bn(self.cnn1(x)))
+        x = self.relu(x)
+        x = self.pool1(self.cnn2_bn(self.dropout(self.cnn2(x))))
+        x = self.relu(x)
+        x = self.pool1(self.cnn3_bn(self.cnn3(x)))
+        x = self.relu(x)
+        x = self.pool1(self.cnn4_bn(self.dropout(self.cnn4(x))))
+        x = self.relu(x)
+        x = self.pool2(self.cnn5_bn(self.cnn5(x)))
+        x = self.relu(x)
+        x = self.pool2(self.cnn6_bn(self.dropout(self.cnn6(x))))
+        x = self.relu(x)
+        x = self.pool2(self.cnn7_bn(self.dropout(self.cnn7(x))))
+        x = self.relu(x)
 
         x = x.view(x.size(0), -1)
 
